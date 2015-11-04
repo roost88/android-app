@@ -1,0 +1,65 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.dawngregg.ucd.roostspaintballwishlist.ProductDetailsFragment"
+    android:background="@color/yellow2">
+
+    <ImageView
+        android:contentDescription="@string/desc"
+        android:id="@+id/paintball_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="15sp"
+        android:scaleType="fitStart"
+        android:src="@drawable/mvp_purple"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:text="@string/rating"
+        android:id="@+id/textView2"
+        android:layout_gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_alignRight="@+id/action_add"
+        android:layout_alignEnd="@+id/action_add" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingBar"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue2"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:text="@string/statusNot"
+        android:id="@+id/textView"
+        android:layout_above="@+id/action_add"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="46dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add"
+        android:id="@+id/action_add"
+        android:background="@color/blue1"
+        android:textColor="@color/white"
+        android:padding="5sp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Roost\'s Paintball Wishlist</string>
+    <string name="action_home">Home</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_products">Products</string>
+    <string name="action_wishlist">WishList</string>
+    <string name="title_activity_product">ProductActivity</string>
+    <string name="action_close">Close</string>
+    <string name="statusNot">Not In WishList</string>
+    <string name="statusIn">In WishList</string>
+    <string name="add">Add To WishList</string>
+    <string name="remove">Remove From WishList</string>
+    <string name="rating">How bad do you want it?</string>
+    <string name="desc">Paintball Photo</string>
+</resources>
