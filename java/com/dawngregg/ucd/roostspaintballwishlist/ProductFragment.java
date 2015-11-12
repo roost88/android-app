@@ -1,10 +1,32 @@
 package com.dawngregg.ucd.roostspaintballwishlist;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import android.app.ListActivity;
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import android.os.AsyncTask;
+import android.widget.ArrayAdapter;
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.ListFragment;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.dawngregg.ucd.roostspaintballwishlist.dummy.DummyContent;
@@ -47,12 +69,134 @@ public class ProductFragment extends ListFragment {
         // Set title
         getActivity().setTitle(mParam1);
 
-        // TODO: Change Adapter to display your content
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
+//        // TODO: Change Adapter to display your content
+//        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
+//                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
+
+        new HttpGetTask().execute();
 
         // Retain instance
         setRetainInstance(true);
+    }
+
+    private class HttpGetTask extends AsyncTask<Void, Void, List> {
+
+        private static final String TAG = "HttpGetTask ";
+        private static final String URL = "http://ucd.dawngregg.com/dlang/a6/data.json.php";
+
+        @Override
+        protected List doInBackground(Void... params) {
+            List data = null;
+            HttpURLConnection httpUrlConnection = null;
+
+            try
+            {
+                httpUrlConnection = (HttpURLConnection) new URL(URL).openConnection();
+
+                InputStream in = new BufferedInputStream(httpUrlConnection.getInputStream());
+
+                JSONResponseHandler mClient = new JSONResponseHandler();
+
+                String jdata = readStream(in);
+
+                data = mClient.handleResponse(jdata);
+            }
+            catch (MalformedURLException exception)
+            {
+                Log.e(TAG, "MalformedURLException");
+            }
+            catch (IOException exception)
+            {
+                Log.e(TAG, "IOException");
+            }
+            finally
+            {
+                if (null != httpUrlConnection)
+                    httpUrlConnection.disconnect();
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(List result) {
+            // Create a ListAdapter from the JSON List data
+            ArrayAdapter listAdapter = new ArrayAdapter(getActivity(),
+                    android.R.layout.simple_list_item_1, result);
+            setListAdapter(listAdapter);
+        }
+
+        private String readStream(InputStream in) {
+            String TAG = "readStream ";
+            BufferedReader reader = null;
+            StringBuffer data = new StringBuffer("");
+
+            try
+            {
+                reader = new BufferedReader(new InputStreamReader(in));
+                String line = "";
+                while ((line = reader.readLine()) != null)
+                {
+                    data.append(line);
+                }
+            }
+            catch (IOException e)
+            {
+                Log.e(TAG, "IOException");
+            }
+            finally
+            {
+                if (reader != null)
+                {
+                    try
+                    {
+                        reader.close();
+                    } catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            return data.toString();
+        }
+    }
+
+    private class JSONResponseHandler {
+
+//        private static final String ID_TAG = "ItemID";
+        private static final String NAME_TAG = "Name";
+        private static final String PRODUCTS_TAG = "PRODUCTS";
+        private static final String TAG = "JSONResponseHandler ";
+
+        public List handleResponse(String JSONResponse) throws IOException
+        {
+            List result = new ArrayList();
+
+            try
+            {
+                // Get top-level JSON Object - a Map
+                JSONObject responseObject = (JSONObject) new JSONTokener(JSONResponse).nextValue();
+
+                // Extract value of "PRODUCTS" key -- a List
+                JSONArray allProducts = responseObject.getJSONArray(PRODUCTS_TAG);
+
+                // Iterate over products list
+                for (int i = 0; i < allProducts.length(); i++)
+                {
+                    // Get single product - a Map
+                    JSONObject singleProduct = (JSONObject) allProducts.get(i);
+
+                    // Summarize product data as a string and add it to
+                    // result
+                    result.add(singleProduct.get(NAME_TAG));
+                }
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+
+            return result;
+        }
     }
 
 

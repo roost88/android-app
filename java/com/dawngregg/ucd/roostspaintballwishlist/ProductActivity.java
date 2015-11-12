@@ -21,6 +21,7 @@ public class ProductActivity extends Activity
         setContentView(R.layout.activity_product);
 
         // Get reference to Frame
+        int frame2 = R.id.product_frame;
 
         // Reference FragmentManager
         fragManager = getFragmentManager();
@@ -39,7 +40,7 @@ public class ProductActivity extends Activity
         frag.setArguments(args);
 
         // Add Fragment to FragmentTransaction
-        fragTrans.add(R.id.product_frame, frag);
+        fragTrans.add(frame2, frag);
 
         // Commit FragmentTransaction
         fragTrans.commit();
@@ -66,6 +67,7 @@ public class ProductActivity extends Activity
     }
 
     public void onFragmentInteraction(String str, int pos) {
+
         finish();
     }
 }
