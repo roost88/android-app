@@ -3,7 +3,6 @@ package com.dawngregg.ucd.roostspaintballwishlist;
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
-import android.view.animation.AccelerateInterpolator;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,19 +16,17 @@ import java.io.PrintWriter;
 
 public class FileReadWrite {
     private static final String TAG = "FileReadWrite";
-    private static final String fileName = "data.json";
 
     // Write to a File
-    private void writeFile(String JSONData, Activity curActivity)
+    void writeFile(String JSONData, Activity curActivity, String fileName)
     {
         try
         {
             // Open file for output - throws FileNotFoundException
-            FileOutputStream outputStream = curActivity.openFileOutput(fileName, Context.MODE_PRIVATE);
-
+            FileOutputStream ostream = curActivity.openFileOutput(fileName, Context.MODE_PRIVATE);
 
             PrintWriter pw = new PrintWriter(new BufferedWriter(
-                    new OutputStreamWriter(outputStream)));
+                    new OutputStreamWriter(ostream)));
 
             // Print JSON data string to file
             pw.println(JSONData);
@@ -44,7 +41,7 @@ public class FileReadWrite {
     }
 
     // Read from a file
-    private String readFile(Activity curActivity)
+    String readFile(Activity curActivity, String fileName)
     {
         String line = "";
 
@@ -53,9 +50,9 @@ public class FileReadWrite {
         try
         {
             // Open file for input - throws FileNotFoundException
-            FileInputStream inputStream = curActivity.openFileInput(fileName);
+            FileInputStream instream = curActivity.openFileInput(fileName);
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+            BufferedReader br = new BufferedReader(new InputStreamReader(instream));
 
             while (null != (line = br.readLine()))
             {

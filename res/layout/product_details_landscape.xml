@@ -8,13 +8,25 @@
     android:background="@color/yellow2">
 
     <ImageView
-        android:contentDescription="@string/desc"
+        android:contentDescription="@string/image"
         android:id="@+id/paintball_image"
+        android:paddingTop="15sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/mvp_purple"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/product_description"
+        android:text="@string/prod_desc"
+        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/paintball_image"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="10sp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,7 +45,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/ratingBar"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_above="@+id/textView"
+        android:layout_alignTop="@+id/textView"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -45,7 +57,8 @@
         android:text="@string/statusNot"
         android:id="@+id/textView"
         android:layout_above="@+id/action_add"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignLeft="@+id/action_add"
+        android:layout_alignStart="@+id/action_add" />
 
     <Button
         android:layout_width="wrap_content"
@@ -58,6 +71,7 @@
         android:padding="5sp"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

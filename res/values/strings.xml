@@ -11,5 +11,6 @@
     <string name="add">Add To WishList</string>
     <string name="remove">Remove From WishList</string>
     <string name="rating">How bad do you want it?</string>
-    <string name="desc">Paintball Photo</string>
+    <string name="image">Paintball Photo</string>
+    <string name="prod_desc">Description</string>
 </resources>

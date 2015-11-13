@@ -2,6 +2,7 @@ package com.dawngregg.ucd.roostspaintballwishlist;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import java.io.BufferedInputStream;
@@ -12,7 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import android.app.ListActivity;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -26,7 +27,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.app.ListFragment;
 import android.view.View;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.dawngregg.ucd.roostspaintballwishlist.dummy.DummyContent;
@@ -37,6 +37,8 @@ public class ProductFragment extends ListFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "title1";
     private static final String ARG_PARAM2 = "title2";
+
+    private static final String FILE_NAME = "data.json";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -69,10 +71,6 @@ public class ProductFragment extends ListFragment {
         // Set title
         getActivity().setTitle(mParam1);
 
-//        // TODO: Change Adapter to display your content
-//        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-//                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS));
-
         new HttpGetTask().execute();
 
         // Retain instance
@@ -86,19 +84,56 @@ public class ProductFragment extends ListFragment {
 
         @Override
         protected List doInBackground(Void... params) {
+
+            // Create Date object with current time
+            Date date1 = new Date();
+            long currDate = date1.getTime();
+
+            // Create SharedPreference and editor
+            SharedPreferences prefs = getActivity().getPreferences(getActivity().MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+
+            // Add currDate to SharedPreference
+            editor.putLong("time", date1.getTime());
+            editor.apply();
+
+            // Get SharedPreference date
+            Date date2 = new Date(prefs.getLong("time", 0));
+            long prefDate = date2.getTime();
+
+            // Create variables
             List data = null;
             HttpURLConnection httpUrlConnection = null;
+            String jdata = "";
+
+            // Create instance of JSONResponseHandler
+            JSONResponseHandler mClient = new JSONResponseHandler();
 
             try
             {
-                httpUrlConnection = (HttpURLConnection) new URL(URL).openConnection();
+                if (currDate < (prefDate + (60*60*1000)))
+                {
+                    FileReadWrite readObj = new FileReadWrite();
 
-                InputStream in = new BufferedInputStream(httpUrlConnection.getInputStream());
+                    jdata = readObj.readFile(getActivity(), FILE_NAME);
 
-                JSONResponseHandler mClient = new JSONResponseHandler();
+                    Log.i(TAG, "Read from stored data");
+                }
+                else
+                {
+                    // Connect to JSON page URL
+                    httpUrlConnection = (HttpURLConnection) new URL(URL).openConnection();
 
-                String jdata = readStream(in);
+                    // Create new inputStream to get data from JSON web page
+                    InputStream in = new BufferedInputStream(httpUrlConnection.getInputStream());
 
+                    // Save data from web page into String
+                    jdata = readStream(in);
+
+                    Log.i(TAG, "Read from webpage data");
+                }
+
+                // Send JSON data to handleResponse function
                 data = mClient.handleResponse(jdata);
             }
             catch (MalformedURLException exception)
@@ -114,6 +149,7 @@ public class ProductFragment extends ListFragment {
                 if (null != httpUrlConnection)
                     httpUrlConnection.disconnect();
             }
+
             return data;
         }
 
@@ -162,13 +198,21 @@ public class ProductFragment extends ListFragment {
 
     private class JSONResponseHandler {
 
-//        private static final String ID_TAG = "ItemID";
         private static final String NAME_TAG = "Name";
         private static final String PRODUCTS_TAG = "PRODUCTS";
         private static final String TAG = "JSONResponseHandler ";
 
         public List handleResponse(String JSONResponse) throws IOException
         {
+            // Create new FileReadWrite object
+            FileReadWrite writeObj = new FileReadWrite();
+
+            // Get the current activity
+            Activity curActivity = getActivity();
+
+            // Write the JSONResponse to the file
+            writeObj.writeFile(JSONResponse, curActivity, FILE_NAME);
+
             List result = new ArrayList();
 
             try
